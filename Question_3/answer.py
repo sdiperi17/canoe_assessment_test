@@ -38,16 +38,29 @@ class Person:
 
 
 class Patient(Person):
-    def __init__(self, name, surname, birthdate, address, telephone, email, symptoms):
+    def __init__(self, name, surname, birthdate, address, telephone, email, symptoms, mouth_state, valid_doctor):
         super().__init__(name, surname, birthdate, address, telephone, email)
         self.symptoms = symptoms
+        self.mouth_state = mouth_state
+        self.valid_doctor = valid_doctor
 
-    def follow_doctors_instructions(self, doctor_id, doctor_info, instruction):
+    def validate_doctors_instructions(self, doctor_id, doctor_info, instruction):
         if doctors.get(doctor_id) is not None and doctors[doctor_id]["name"] == doctor_info["name"] and doctors[doctor_id]["surname"] == doctor_info["surname"]:
-            print(f"Here you go, {instruction} AAAAAA")
+            self.valid_doctor = True
+            print(
+                f"{doctor_info['name']} {doctor_info['surname']} has been validated. He/She is your doctor")
         else:
+            self.valid_doctor = False
             print(
                 f"I am sorry you are not my doctor why are you asking me to {instruction}")
+
+    def __mouth_handler__(self):
+        if self.valid_doctor:
+            self.mouth_state = True
+            print(f"{self.name} opened his/her mouth")
+        else:
+            self.mouth_state = False
+            print(f"Doctor couldn't not bevalidated")
 
 
 class Employee(Person):
@@ -79,7 +92,7 @@ patient = Patient("Jane",
                   datetime.date(1992, 3, 12),  # year, month, day
                   "No. 12 Short Street, Greenville",
                   "555 456 0987",
-                  "jane.doe@example.com", "Tummy Pain")
+                  "jane.doe@example.com", "Tummy Pain", False, False)
 
 doctor = Employee("Scott", "Ricart", datetime.date(1992, 3, 12),  # year, month, day
                   "240 E 38th St, NY, NY, 10016",
@@ -90,4 +103,5 @@ visiting_doctor = {"id": 1, "name": "Scott", "surname": "Ricart"}
 
 doctor.introduce()
 doctor.give_instructions(patient.name, "open your mouth")
-patient.follow_doctors_instructions(1, visiting_doctor, "open mouth")
+patient.validate_doctors_instructions(1, visiting_doctor, "open mouth")
+patient.__mouth_handler__()
