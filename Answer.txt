@@ -1,10 +1,14 @@
+# What is CSRF?
+
 In a Cross-site request forgery (CSRF), the attacker sends a request to the browser that seems like it was made by the user. Therefore, if the user is authenticated to the site, the site cannot distinguish between legitimate requests and forged requests.
-
 To do this, the victim is first tricked into clicking a link. This is followed by sending a seemingly legitimate request to the website. This request with cookies the victim has associated with the website. A CSRF attack can work only when the victim is logged in to an account.
-
 The forged request contains all of the information and comes from the same IP address as a real request from the victim.
 
+# How is it different from XSS?
+
 The difference between CSRF (Cross-site Request Forgery) and XSS (Cross-Site Scripting) is that CSRF happens in authenticated sessions when the server trusts the user/browser while XSS (Cross-Site Scripting) doesn’t need an authenticated session and can be exploited when the vulnerable website doesn’t do the basics of validation or escaping input.
+
+# How are these prevented?
 
 CSRF may be prevented.
 Using SameSite Cookie Attribute for session cookies. A same-site Cookie is sent only when the request comes from the same origin that is related to the Cookie. When another site tries to send a request, the same-site Cookie is not sent thus offering protection against CSRF.
