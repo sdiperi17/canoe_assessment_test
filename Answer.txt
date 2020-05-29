@@ -1,0 +1,29 @@
+In a Cross-site request forgery (CSRF), the attacker sends a request to the browser that seems like it was made by the user. Therefore, if the user is authenticated to the site, the site cannot distinguish between legitimate requests and forged requests.
+
+To do this, the victim is first tricked into clicking a link. This is followed by sending a seemingly legitimate request to the website. This request with cookies the victim has associated with the website. A CSRF attack can work only when the victim is logged in to an account.
+
+The forged request contains all of the information and comes from the same IP address as a real request from the victim.
+
+The difference between CSRF (Cross-site Request Forgery) and XSS (Cross-Site Scripting) is that CSRF happens in authenticated sessions when the server trusts the user/browser while XSS (Cross-Site Scripting) doesn’t need an authenticated session and can be exploited when the vulnerable website doesn’t do the basics of validation or escaping input.
+
+CSRF may be prevented.
+Using SameSite Cookie Attribute for session cookies. A same-site Cookie is sent only when the request comes from the same origin that is related to the Cookie. When another site tries to send a request, the same-site Cookie is not sent thus offering protection against CSRF.
+Synchronizing the cookie with an anti-CSRF token that was already provided to the browser.
+Implementing user interaction based protection for highly sensitive operations. Requiring a “challenge response,” which is often used in conjunction with the other two available prevention techniques.
+Check if your framework has built-in SCRG pro built-in CSRF protection and use it, for example for PHP and Apache: CSRFProtector Project
+If framework does not have built-in CSRF protection, CSRF tokens can be added to all state changing requests (requests that cause actions on the site) and validate them on backend
+Implement at least one mitigation from Defense in Depth Mitigations section
+Use custom request headers
+Verify the origin with standard headers
+Use double submit cookies
+
+XSS attacks can be prevented by:
+Filter input on arrival. At the point where user input is received, filter as strictly as possible based on what is expected or valid input.
+Encode data on output. At the point where user-controllable data is output in HTTP responses, encode the output to prevent it from being interpreted as active content. Depending on the output context, this might require applying combinations of HTML, URL, JavaScript, and CSS encoding.
+Use appropriate response headers. To prevent XSS in HTTP responses that aren't intended to contain any HTML or JavaScript, you can use the Content-Type and X-Content-Type-Options headers to ensure that browsers interpret the responses in the way you intend.
+Content Security Policy. As a last line of defense, you can use Content Security Policy (CSP) to reduce the severity of any XSS vulnerabilities that still occur.
+ 
+
+
+
+
