@@ -37,30 +37,37 @@ class Person:
             print("My email is {}".format(self.email))
 
 
-class Patient(Person):
-    def __init__(self, name, surname, birthdate, address, telephone, email, symptoms, mouth_state, valid_doctor):
-        super().__init__(name, surname, birthdate, address, telephone, email)
-        self.symptoms = symptoms
-        self.mouth_state = mouth_state
+class Mouth():
+    def __init__(self, name, surname, doctor_id=None, doctor_info=None, instruction=None, mouth_open=False, valid_doctor=False):  # instantiating the base
+        self.name = name
+        self.surname = surname
+        self.mouth_open = mouth_open
         self.valid_doctor = valid_doctor
+        # self.doctor_id = doctor_id
+        # self.doctor_info = doctor_info
+        # self.instruction = instruction
 
-    def validate_doctors_instructions(self, doctor_id, doctor_info, instruction):
+    def __mouth_handler__(self, instruction):
+        if self.valid_doctor:
+            if instruction == 'open':
+                self.mouth_open = True
+            else:
+                self.mouth_open = False
+            print(f"{self.name} {instruction}ed his/her mouth")
+        else:
+            print(f"Doctor couldn't not be validated. Unknown doctor")
+
+    def validate_doctor(self, doctor_id, doctor_info, instruction):
+        print(f"Please wait. {self.name} is validating your information")
         if doctors.get(doctor_id) is not None and doctors[doctor_id]["name"] == doctor_info["name"] and doctors[doctor_id]["surname"] == doctor_info["surname"]:
             self.valid_doctor = True
             print(
                 f"{doctor_info['name']} {doctor_info['surname']} has been validated. He/She is your doctor")
+            self.__mouth_handler__(instruction)
         else:
             self.valid_doctor = False
             print(
-                f"I am sorry you are not my doctor why are you asking me to {instruction}")
-
-    def __mouth_handler__(self):
-        if self.valid_doctor:
-            self.mouth_state = True
-            print(f"{self.name} opened his/her mouth")
-        else:
-            self.mouth_state = False
-            print(f"Doctor couldn't not bevalidated")
+                f"I am sorry you are not my doctor why are you asking me to {instruction} my mouth")
 
 
 class Employee(Person):
@@ -74,8 +81,22 @@ class Employee(Person):
         print(
             f"Hi my name is {self.name} {self.surname} and I am {self.position}. I have {self.experience} years of experience. Thank you for visiting me today")
 
-    def give_instructions(self, patient, instructions):
-        print(f"{patient}, please tell me what are your symptoms and {instructions}")
+    def give_instructions(self, patient, instruction):
+        print(
+            f"{patient}, please tell me what are your symptoms and {instruction} your mouth")
+        return instruction
+
+
+class Patient(Person):
+
+    def __init__(self, name, surname, birthdate, address, telephone, email, symptoms):
+        super().__init__(name, surname, birthdate, address, telephone, email)
+        self.symptoms = symptoms
+        self.mouth = Mouth(name, surname, None, None, None,
+                           mouth_open=False, valid_doctor=False)
+
+    def __follow_instructions__(self, doctor_info, instruction):
+        return self.mouth.validate_doctor(doctor_info["id"], doctor_info, instruction)
 
 
 person = Person(
@@ -85,6 +106,8 @@ person = Person(
     "No. 12 Short Street, Greenville",
     "555 456 0987",
     "jane.doe@example.com",
+
+
 )
 
 patient = Patient("Jane",
@@ -92,16 +115,16 @@ patient = Patient("Jane",
                   datetime.date(1992, 3, 12),  # year, month, day
                   "No. 12 Short Street, Greenville",
                   "555 456 0987",
-                  "jane.doe@example.com", "Tummy Pain", False, False)
+                  "jane.doe@example.com", "Tummy Pain")
 
 doctor = Employee("Scott", "Ricart", datetime.date(1992, 3, 12),  # year, month, day
                   "240 E 38th St, NY, NY, 10016",
                   "123456789",
-                  "scott.ricart@example.com", "ENT doctor", 777, 28)
+                  "scott.ricart@example.com", "ENT doctor", 1, 28)
 
-visiting_doctor = {"id": 1, "name": "Scott", "surname": "Ricart"}
+test_visiting_doctor = {"id": 1, "name": "Scott", "surname": "Ricart"}
 
 doctor.introduce()
-doctor.give_instructions(patient.name, "open your mouth")
-patient.validate_doctors_instructions(1, visiting_doctor, "open mouth")
-patient.__mouth_handler__()
+patient.__follow_instructions__(
+    test_visiting_doctor, doctor.give_instructions(patient.name, "open"))
+print("Patient's mouth state:", patient.mouth.mouth_open)
